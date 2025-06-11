@@ -35,3 +35,16 @@ jobs:
       run: |
         cd app
         docker build -t devops-demo-app .
+
+    - name:  Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          docker stop demo || true
+          docker rm demo || true
+          docker pull hello-world || echo "skip pull"
+          docker run -d -p 5050:5000 --name demo devops-demo-app
