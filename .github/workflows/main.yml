@@ -1,4 +1,4 @@
-name: CI - Docker Flask App1
+nname: CI - Docker Flask App1
 
 on:
   push:
@@ -24,14 +24,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Test Flask App
+    - name:  Test Flask App
       run: |
         cd app
         python app.py &   # Start app in background
         sleep 5
         curl http://localhost:5000
 
-    - name:  Build Docker Image
+    - name:  Build Docker Image (locally on runner for testing)
       run: |
         cd app
         docker build -t devops-demo-app .
@@ -44,7 +44,15 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
+          # Clean up old container and app if any
           docker stop demo || true
           docker rm demo || true
-          docker pull hello-world || echo "skip pull"
+          rm -rf app || true
+
+          # Clone your repo
+          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git
+          cd app/app
+
+          # Build and run Docker app on EC2
+          docker build -t devops-demo-app .
           docker run -d -p 5050:5000 --name demo devops-demo-app
