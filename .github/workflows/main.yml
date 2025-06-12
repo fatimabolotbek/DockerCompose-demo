@@ -1,4 +1,67 @@
-name: CI - Docker Flask App1
+# name: CI/CD - Flask + MySQL with Docker Compose
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+
+#     steps:
+#     - name:  Checkout code
+#       uses: actions/checkout@v3
+#     - name:  SSH & Deploy to EC2
+#       uses: appleboy/ssh-action@v1.0.0
+#       with:
+#         python-version: '3.10'
+
+#     - name:  Install dependencies
+#       run: |
+#         cd app
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
+
+#     - name:  Test Flask App
+#       run: |
+#         cd app
+#         python app.py &   # Start app in background
+#         sleep 5
+#         curl http://localhost:5000
+
+#     - name:  Build Docker Image (locally on runner for testing)
+#       run: |
+#         cd app
+#         docker build -t devops-demo-app .
+
+#     - name:  Deploy to EC2 via SSH
+#       uses: appleboy/ssh-action@v1.0.0
+#       with:
+#         host: ${{ secrets.EC2_HOST }}
+#         username: ${{ secrets.EC2_USER }}
+#         key: ${{ secrets.EC2_SSH_KEY }}
+#         port: 22
+#         script: |
+#           # Install Git (one-time setup)
+#           sudo yum install git -y
+#           # Clean up old container and app if any
+#           docker stop demo || true
+#           docker rm demo || true
+#           rm -rf devops-demo || true
+
+#           # Clone your repo
+#           git clone https://github.com/fatimabolotbek/DockerCompose-demo.git devops-demo
+#           cd devops-demo/app
+
+#           # Build and run Docker app on EC2
+#           docker build -t devops-demo-app .
+#           docker run -d -p 5050:5000 --name demo devops-demo-app
+
+
+
+
+name: CI/CD - Flask + MySQL with Docker Compose
 
 on:
   push:
@@ -6,37 +69,14 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name:  Checkout code
       uses: actions/checkout@v3
 
-    - name:  Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name:  Install dependencies
-      run: |
-        cd app
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name:  Test Flask App
-      run: |
-        cd app
-        python app.py &   # Start app in background
-        sleep 5
-        curl http://localhost:5000
-
-    - name:  Build Docker Image (locally on runner for testing)
-      run: |
-        cd app
-        docker build -t devops-demo-app .
-
-    - name:  Deploy to EC2 via SSH
+    - name:  SSH & Deploy to EC2
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -44,17 +84,18 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          # Install Git (one-time setup)
-          sudo yum install git -y
-          # Clean up old container and app if any
-          docker stop demo || true
-          docker rm demo || true
-          rm -rf devops-demo || true
+          sudo apt update -y
+          sudo apt install -y git docker.io docker-compose
 
-          # Clone your repo
+          # Optional: Clean up old project folder
+          rm -rf ~/flask-compose-demo
+
+          # Clone latest app code
           git clone https://github.com/fatimabolotbek/DockerCompose-demo.git devops-demo
-          cd devops-demo/app
+          cd flask-compose-demo
 
-          # Build and run Docker app on EC2
-          docker build -t devops-demo-app .
-          docker run -d -p 5050:5000 --name demo devops-demo-app
+          # Stop old containers (if any)
+          docker-compose down || true
+
+          # Rebuild and restart with latest code
+          docker-compose up -d --build
