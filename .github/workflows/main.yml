@@ -49,11 +49,11 @@ jobs:
           # Clean up old container and app if any
           docker stop demo || true
           docker rm demo || true
-          rm -rf app || true
+          rm -rf devops-demo || true
 
           # Clone your repo
-          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git appleboy
-          cd app/app
+          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git devops-demo
+          cd devops-demo/app
 
           # Build and run Docker app on EC2
           docker build -t devops-demo-app .
