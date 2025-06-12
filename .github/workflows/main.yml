@@ -84,18 +84,23 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          sudo apt update -y
-          sudo apt install -y git docker.io docker-compose
+          sudo yum update -y
+          sudo yum install -y docker
+          sudo service docker start
+          sudo usermod -aG docker ec2-user
+
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
           # Optional: Clean up old project folder
           rm -rf ~/flask-compose-demo
 
           # Clone latest app code
           git clone https://github.com/fatimabolotbek/DockerCompose-demo.git flask-compose-demos
-          cd flask-compose-demo
+          cd flask-compose-demos
 
           # Stop old containers (if any)
-          docker-compose down || true
+          /usr/local/bin/docker-compose down || true
 
           # Rebuild and restart with latest code
-          docker-compose up -d --build
+          /usr/local/bin/docker-compose up -d --build
