@@ -27,7 +27,8 @@ CREATE TABLE orders (
 -- Insert sample users
 INSERT INTO users (name, email) VALUES
 ('Fatima', 'fatima@example.com'),
-('Ali', 'ali@example.com');
+('Nur', 'nur@example.com'),
+('Yrys', 'yrys@example.com')
 
 -- Insert sample products
 INSERT INTO products (name, price, stock) VALUES
