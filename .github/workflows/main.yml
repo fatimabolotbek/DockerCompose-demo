@@ -44,13 +44,15 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
+          # Install Git (one-time setup)
+          sudo yum install git -y
           # Clean up old container and app if any
           docker stop demo || true
           docker rm demo || true
           rm -rf app || true
 
           # Clone your repo
-          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git
+          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git appleboy
           cd app/app
 
           # Build and run Docker app on EC2
