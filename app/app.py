@@ -8,7 +8,7 @@ def get_db_connection():
         host="db",
         user="root",
         password="password",
-        database="demo1"
+        database="demo"
     )
 
 @app.route("/")
