@@ -96,8 +96,8 @@ jobs:
           rm -rf ~/flask-compose-demo
 
           # Clone latest app code
-          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git flask-compose-demos
-          cd flask-compose-demos
+          git clone https://github.com/fatimabolotbek/DockerCompose-demo.git DockerCompose-demo
+          cd DockerCompose-demo
 
           # Stop old containers (if any)
           /usr/local/bin/docker-compose down || true
