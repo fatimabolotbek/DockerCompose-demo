@@ -1,11 +1,11 @@
---  USERS table
+-- USERS table
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
   email VARCHAR(100)
 );
 
---  PRODUCTS table
+-- PRODUCTS table
 CREATE TABLE products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
@@ -13,7 +13,7 @@ CREATE TABLE products (
   stock INT
 );
 
---  ORDERS table
+-- ORDERS table
 CREATE TABLE orders (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT,
@@ -24,7 +24,7 @@ CREATE TABLE orders (
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
---  Insert sample users
+-- Insert sample users
 INSERT INTO users (name, email) VALUES
 ('Fatima', 'fatima@example.com'),
 ('Ali', 'ali@example.com');
@@ -35,7 +35,7 @@ INSERT INTO products (name, price, stock) VALUES
 ('iPhone 14', 1099.00, 8),
 ('AirPods Pro', 249.00, 15);
 
--- 📦 Insert sample orders
+-- Insert sample orders
 INSERT INTO orders (user_id, product_id, status, order_date) VALUES
 (1, 1, 'shipped', NOW()),
 (1, 2, 'processing', NOW()),
